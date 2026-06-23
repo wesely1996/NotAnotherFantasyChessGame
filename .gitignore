@@ -1,2 +1,10 @@
+# Documentation files
 *.md
 !docs/GDD.md
+!README.md
+
+# Build files
+build/
+
+# AI model files
+.claude/
