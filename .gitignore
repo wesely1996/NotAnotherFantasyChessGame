@@ -6,5 +6,11 @@
 # Build files
 build/
 
+# IDE / editor artifacts
+.vs/
+.vscode/
+CMakeUserPresets.json
+*.user
+
 # AI model files
 .claude/
