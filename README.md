@@ -64,6 +64,8 @@ starting at milestone **M0** of the implementation plan
 - raylib `5.5`, fetched automatically via CMake `FetchContent` (no manual
   install needed — first configure will clone and build it, so expect the
   first `cmake -B build` to take longer than subsequent ones)
+- nlohmann/json `v3.11.3`, fetched the same way (header-only, no separate
+  build step)
 
 ```sh
 cmake -G "MinGW Makefiles" -B build
@@ -71,10 +73,20 @@ cmake --build build
 ./build/apawnstale.exe
 ```
 
-raylib/nlohmann-json integration is in progress (raylib is wired in; the
-executable currently just includes `raylib.h` and returns, no window yet).
-The folder structure and the render smoke test land in later M0 tickets —
-this section will be expanded as each one completes.
+raylib and nlohmann/json are both wired in; the executable currently just
+runs a throwaway JSON parse round-trip and returns, no window yet. The
+folder structure and the render smoke test land in later M0 tickets — this
+section will be expanded as each one completes.
+
+**Note (Windows/MinGW):** this toolchain's `ld` (GNU ld 2.43.1, MSYS2
+UCRT64) fails to link any object file containing C++ exception-handling
+unwind tables against the dynamic `libgcc_s_seh-1.dll`/`libstdc++-6.dll`
+(`collect2.exe: error: ld returned 116 exit status`, no other diagnostic —
+reproduces with a bare `throw`/`catch`, unrelated to json or raylib).
+`CMakeLists.txt` already links `apawnstale` with `-static-libgcc
+-static-libstdc++` to work around it, so this should be transparent to
+contributors on the same toolchain — flagging it here in case it resurfaces
+elsewhere (e.g. a future `tests/` target).
 
 **Note (Windows):** if the raylib fetch fails with a git SSL error
 (`unable to get local issuer certificate`), your global git config may be
