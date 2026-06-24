@@ -41,8 +41,9 @@ in [`GDD.md`](docs/GDD.md).
 ## Tech Stack
 
 - **Language:** C++
-- **Engine:** Custom, built on [raylib](https://www.raylib.com/) for
-  windowing, 3D rendering, input, and audio
+- **Engine:** Custom, built on [raylib](https://www.raylib.com/) (pinned to
+  [`5.5`](https://github.com/raysan5/raylib/releases/tag/5.5), via CMake
+  `FetchContent`) for windowing, 3D rendering, input, and audio
 - **Data format:** JSON for piece/upgrade/encounter definitions (see
   [`GDD.md` §12.2](docs/GDD.md#122-data-driven-design))
 - **Build system:** CMake (>= 3.20)
@@ -60,6 +61,9 @@ starting at milestone **M0** of the implementation plan
 **Toolchain verified against:**
 - CMake >= 3.20 (tested with 4.4.0-rc2)
 - GCC/g++ 14.2.0 (MSYS2 UCRT64), via the `MinGW Makefiles` CMake generator
+- raylib `5.5`, fetched automatically via CMake `FetchContent` (no manual
+  install needed — first configure will clone and build it, so expect the
+  first `cmake -B build` to take longer than subsequent ones)
 
 ```sh
 cmake -G "MinGW Makefiles" -B build
@@ -67,10 +71,18 @@ cmake --build build
 ./build/apawnstale.exe
 ```
 
-This currently builds only the bare M0-1 skeleton (`src/main.cpp`, no-op
-`main`). raylib/nlohmann-json integration, the folder structure, and the
-render smoke test land in later M0 tickets — this section will be expanded
-as each one completes.
+raylib/nlohmann-json integration is in progress (raylib is wired in; the
+executable currently just includes `raylib.h` and returns, no window yet).
+The folder structure and the render smoke test land in later M0 tickets —
+this section will be expanded as each one completes.
+
+**Note (Windows):** if the raylib fetch fails with a git SSL error
+(`unable to get local issuer certificate`), your global git config may be
+set to the `openssl` SSL backend without a usable CA bundle. Switch to the
+Windows certificate store instead:
+```sh
+git config --global http.sslBackend schannel
+```
 
 ## Documentation
 
